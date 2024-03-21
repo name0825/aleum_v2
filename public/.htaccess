@@ -1,0 +1,19 @@
+php_flag register_globals on
+php_flag register_long_arrays on
+ServerSignature Off
+
+Header unset X-Powered-By
+Header set X-Powered-By "https://discord.gg/auvzyChaFY"
+Header set X-Content-Type-Options nosniff
+Header set X-XSS-Protection 1
+
+Options -Indexes
+
+<files ~ "^.*\.([Hh][Tt][Aa])">
+    Require all denied
+</files>
+
+RewriteEngine on
+
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*(?!index\.php).*)$ index.php [L,QSA]
