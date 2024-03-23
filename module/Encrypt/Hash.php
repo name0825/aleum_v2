@@ -5,41 +5,37 @@
     include_once __DIR__."/Hashids.php";
 
     class Hash {
-        private $hashids;
+        private static $hashids = array();
 
-        public function __construct() {
-            $this -> hashids = array();
+        public static function create_hashids(string $name, string $salt, int $min_length, string $alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") {
+            self::$hashids[$name] = new Hashids($salt, $min_length, $alphabet);
         }
 
-        public function create_hashids(string $name, string $salt, int $min_length, string $alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890") {
-            $this -> hashids[$name] = new Hashids($salt, $min_length, $alphabet);
-        }
-
-        public function encode(string $name, ...$numbers) : string {
-            if (!isset($this -> hashids[$name]))
+        public static function encode(string $name, ...$numbers) : string {
+            if (!isset(self::$hashids[$name]))
                 new Exception("Invalid name");
-            return $this -> hashids[$name] -> encode($numbers);
+            return self::$hashids[$name] -> encode($numbers);
         }
 
-        public function encodeHex(string $name, string $hex) : string {
-            if (!isset($this -> hashids[$name]))
+        public static function encodeHex(string $name, string $hex) : string {
+            if (!isset(self::$hashids[$name]))
                 new Exception("Invalid name");
-            return $this -> hashids[$name] -> encodeHex($hex);
+            return self::$hashids[$name] -> encodeHex($hex);
         }
 
-        public function decode(string $name, string $hash, int $get = 0) : array {
-            if (!isset($this -> hashids[$name]))
+        public static function decode(string $name, string $hash, int $get = 0) : array {
+            if (!isset(self::$hashids[$name]))
                 new Exception("Invalid name");
-            $decode = $this -> hashids[$name] -> decode($hash);
+            $decode = self::$hashids[$name] -> decode($hash);
             if (count($decode) == 0)
                 return array();
             return $decode;
         }
 
-        public function decodeHex(string $name, string $hash, int $get = 0) : string {
-            if (!isset($this -> hashids[$name]))
+        public static function decodeHex(string $name, string $hash, int $get = 0) : string {
+            if (!isset(self::$hashids[$name]))
                 new Exception("Invalid name");
-            $decode = $this -> hashids[$name] -> decodeHex($hash);
+            $decode = self::$hashids[$name] -> decodeHex($hash);
             return $decode;
         }
     }
